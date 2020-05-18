@@ -1,5 +1,6 @@
 # Local files
 venv/
+saves/
 
 # Build files
 build.bat
