@@ -1,0 +1,6 @@
+# Local files
+venv/
+
+# Build files
+build.bat
+**/__pycache__
