@@ -1,5 +1,5 @@
-import io
-import sys
+import io as _io
+import sys as _sys
 from warnings import warn as _warn
 
 class NoImageData(Exception):
@@ -7,7 +7,7 @@ class NoImageData(Exception):
 		super().__init__('No image data in clipboard.')
 
 # Grabbing image from clipboard
-if sys.platform in ('darwin', 'win32'):
+if _sys.platform in ('darwin', 'win32'):
 	from PIL import ImageGrab as _ImageGrab
 	
 	def getClipboardImage():
@@ -38,7 +38,7 @@ else:
 			except tk.TclError:
 				continue
 			else:
-				img = PIL.Image.open(io.BytesIO(imgbyte))
+				img = PIL.Image.open(_io.BytesIO(imgbyte))
 				return img
 		
 		# It's either no data OR not supported
@@ -46,11 +46,11 @@ else:
 
 #-------------------------- Testing ---------------------------------
 
-import time
-import tkinter as tk
-from PIL import Image, ImageTk
-
-if __name__ == "__main__":
+def _main():
+	import time
+	import tkinter as tk
+	from PIL import Image, ImageTk
+	
 	# Wait for data input
 	while True:
 		try:
@@ -73,4 +73,6 @@ if __name__ == "__main__":
 	
 	root.mainloop()
 
+if __name__ == "__main__":
+	_main()
 #--------------------------------------------------------------------
