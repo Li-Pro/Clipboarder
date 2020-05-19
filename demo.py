@@ -1,4 +1,3 @@
-from hashlib import sha256
 from pathlib import Path
 import re
 import time
@@ -10,15 +9,20 @@ PATHNAME_REGEX = re.compile(r'(\w+\.*)*\w')
 def regexMatch(regex, s):
 	return regex.fullmatch(s) != None
 
-def imgChecksum(img):
-	pixelSum = bytes()
-	h, w = img.size
+def imgCompare(img1, img2):
+	if (not img1) or (not img2):
+		return False
+	
+	h, w = img1.size
+	if not img2.size == (h, w):
+		return False
+	
 	for i in range(h):
 		for j in range(w):
-			pixelSum += bytes([img.getpixel((i, j))])
+			if not img1.getpixel((i, j)) == img2.getpixel((i, j)):
+				return False
 	
-	hashval = sha256(pixelSum).digest()
-	return (h, w, hashval)
+	return True
 
 def captureProc():
 	return
@@ -50,17 +54,13 @@ def main():
 			time.sleep(.1)
 			continue
 		else:
-			chksum = imgChecksum(img)
-			if chksum == lstimg:
-				time.sleep(.1)
+			if imgCompare(img, lstimg):
+				time.sleep(.2)
 				continue
-			
 			img.save(wdir + str(wdcnt) + '.png')
 			wdcnt += 1
-			if wdcnt % 5 == 0:
-				break
-			else:
-				lstimg = chksum
+			
+			lstimg = img
 	
 	with open(wdir + '.wdinfo', 'w') as file:
 		file.write(str(wdcnt) + '\n')
