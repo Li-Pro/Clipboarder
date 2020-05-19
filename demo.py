@@ -1,3 +1,4 @@
+from hashlib import sha256
 from pathlib import Path
 import re
 import time
@@ -8,6 +9,16 @@ PATHNAME_REGEX = re.compile(r'(\w+\.*)*\w')
 
 def regexMatch(regex, s):
 	return regex.fullmatch(s) != None
+
+def imgChecksum(img):
+	pixelSum = bytes()
+	h, w = img.size
+	for i in range(h):
+		for j in range(w):
+			pixelSum += bytes([img.getpixel((i, j))])
+	
+	hashval = sha256(pixelSum).digest()
+	return (h, w, hashval)
 
 def captureProc():
 	return
@@ -31,6 +42,7 @@ def main():
 		wdcnt = 0
 	
 	# Wait for input
+	lstimg = None
 	while True:
 		try:
 			img = getClipboardImage()
@@ -38,9 +50,17 @@ def main():
 			time.sleep(.1)
 			continue
 		else:
+			chksum = imgChecksum(img)
+			if chksum == lstimg:
+				time.sleep(.1)
+				continue
+			
 			img.save(wdir + str(wdcnt) + '.png')
 			wdcnt += 1
-			break
+			if wdcnt % 5 == 0:
+				break
+			else:
+				lstimg = chksum
 	
 	with open(wdir + '.wdinfo', 'w') as file:
 		file.write(str(wdcnt) + '\n')

@@ -32,8 +32,11 @@ else:
 		for mimex in MIMEs:
 			try:
 				images = _img_grabber.clipboard_get(type=mimex)
-				imgbyte = bytes(images)  # Might be: bytes(images.split()[0])
-			except tk.TclError:
+				imgbyte = bytes()
+				for x in images.split(' '):
+					if x != '':
+						imgbyte += bytes([x])
+			except _tk.TclError:
 				continue
 			else:
 				img = PIL.Image.open(_io.BytesIO(imgbyte))
@@ -64,7 +67,7 @@ def _main():
 	img.thumbnail(nsz)
 	
 	root = tk.Tk()
-	rooot.title('View clipboard image')
+	root.title('View clipboard image')
 	
 	imgLabel = tk.Label(root, text='Image Output')
 	imgLabel.image = ImageTk.PhotoImage(img)
