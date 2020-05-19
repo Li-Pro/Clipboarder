@@ -17,7 +17,6 @@ if _sys.platform in ('darwin', 'win32'):
 		return img
 
 else:
-	# Testing needed!
 	_warn("""Module is only tested in macOS & Windows, other platform might not be supported. \
 		Feel free to feedback to me if it doesn't work, or vice versa!""")
 	
