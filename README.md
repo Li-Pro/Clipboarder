@@ -6,7 +6,7 @@ Clipboarder - clipboard image collector
 
 **Patrick: Yup.**
 
-**Computer: And you copy an image.**
+**Computer: And you copied an image.**
 
 **Patrick: Yup.**
 
