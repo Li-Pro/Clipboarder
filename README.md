@@ -14,7 +14,7 @@ Clipboarder - clipboard image collector
 
 **Patrick: That makes sense to me.**
 
-**Computer: Then save it.**
+**Computer: Then take it.**
 
 **Patrick: It's not my image!**
 
