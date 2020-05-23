@@ -8,8 +8,33 @@ if py_ver < req_ver:
 	raise Exception('Python version should be >=', req_ver)
 
 # Setup from requirements
-subprocess.run(['python', '-m', 'pip', 'install', '-r', 'requirements.txt'])
+# subprocess.run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
+APT_INST = ['sudo', 'apt-get', 'install']
+PIP_INST = [sys.executable, '-m', 'pip', 'install']
+
+COMMON_DEP = [
+	[*PIP_INST, 'Pillow==7.1.2']
+]
+
+LINUX_DEP = [
+	[*APT_INST, 'xclip', 'python3-tk']
+]
+
+WIN_DARWIN_DEP = [
+]
 
 # Install additional files if needed
-if sys.platform.startswith('linux'):
-	subprocess.run(['sudo', 'apt-get', 'install', 'xclip', 'python3-tk'])
+for depends in COMMON_DEP:
+	subprocess.run(depends)
+
+if sys.platform in ('darwin', 'win32'):
+	for depends in LINUX_DEP:
+		subprocess.run(depends)
+
+elif sys.platform.startswith('linux'):
+	for depends in LINUX_DEP:
+		subprocess.run(depends)
+
+else:
+	for depends in LINUX_DEP:
+		subprocess.run(depends)

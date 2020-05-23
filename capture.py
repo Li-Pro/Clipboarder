@@ -1,14 +1,14 @@
 import io as _io
 import sys as _sys
+import subprocess as _subprocess
 from warnings import warn as _warn
+from PIL import ImageGrab as _ImageGrab, Image as _Image
 
 class NoImageData(Exception):
 	def __init__(self):
 		super().__init__('No image data in clipboard.')
 
 if _sys.platform in ('darwin', 'win32'):
-	from PIL import ImageGrab as _ImageGrab
-	
 	def getClipboardImage():
 		img = _ImageGrab.grabclipboard()
 		if not img:
@@ -16,33 +16,32 @@ if _sys.platform in ('darwin', 'win32'):
 		
 		return img
 
-else:
-	_warn("""Module is only tested in macOS & Windows, other platform might not be supported. \
-		Feel free to feedback to me if it doesn't work, or vice versa!""")
-	
-	import tkinter as _tk
-	_img_grabber = _tk.Tk()
-	_img_grabber.iconify()
-	_img_grabber.title('Clipboarder process')
-	_tk.Label(_img_grabber, text='This is Clipboarder inner process. DO NOT close this while running.').pack()
-	
+elif _sys.platform.startswith('linux'):
 	def getClipboardImage():
 		MIMEs = ['image/png', 'image/jpeg', 'image/bmp', 'image/gif', 'image/vnd.microsoft.icon', 'image/svg+xml', 'image/tiff', 'image/webp']
 		for mimex in MIMEs:
 			try:
-				images = _img_grabber.clipboard_get(type=mimex)
-				imgbyte = bytes()
-				for x in images.split(' '):
-					if x != '':
-						imgbyte += bytes([x])
-			except _tk.TclError:
-				continue
+				result = _subprocess.run(['xclip', '-o', '-target', mimex, '-selection', 'clipboard'], capture_output=True)
+			except:
+				print('Error: cannot run underlying functions.')
+				print('Either dependencies not satisfied, or platform unsupported.')
+				print('Please run setup.py for installation.')
+				
+				raise NotImplementedError
+				
 			else:
-				img = PIL.Image.open(_io.BytesIO(imgbyte))
+				if result.returncode != 0:
+					continue
+				
+				imgbyte = result.stdout
+				img = _Image.open(_io.BytesIO(imgbyte))
 				return img
 		
-		# It's either no data OR not supported
 		raise NoImageData
+
+else:
+	warn("""Module is only tested in macOS & Windows & Linux (Ubuntu), other platform might not be supported. \
+		Feel free to feedback to me if it doesn't work, or vice versa!""")
 
 #-------------------------- Testing ---------------------------------
 
