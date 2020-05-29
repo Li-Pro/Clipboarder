@@ -1,6 +1,8 @@
 import sys
 import subprocess
 
+from warnings import warn as _warn
+
 # Detect version requirements
 py_ver = sys.version_info[0: 2]
 req_ver = (3, 0)
@@ -28,7 +30,7 @@ for depends in COMMON_DEP:
 	subprocess.run(depends)
 
 if sys.platform in ('darwin', 'win32'):
-	for depends in LINUX_DEP:
+	for depends in WIN_DARWIN_DEP:
 		subprocess.run(depends)
 
 elif sys.platform.startswith('linux'):
@@ -36,5 +38,6 @@ elif sys.platform.startswith('linux'):
 		subprocess.run(depends)
 
 else:
+	_warn('Platform other than Windows, macOS and Linux might be unsupported.')
 	for depends in LINUX_DEP:
 		subprocess.run(depends)
