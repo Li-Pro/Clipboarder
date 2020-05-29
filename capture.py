@@ -40,7 +40,7 @@ elif _sys.platform.startswith('linux'):
 		raise NoImageData
 
 else:
-	warn("""Module is only tested in macOS & Windows & Linux (Ubuntu), other platform might not be supported. \
+	_warn("""Module is only tested in macOS & Windows & Linux (Ubuntu), other platform might not be supported. \
 		Feel free to feedback to me if it doesn't work, or vice versa!""")
 
 #-------------------------- Testing ---------------------------------
