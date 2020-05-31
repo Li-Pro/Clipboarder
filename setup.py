@@ -1,3 +1,4 @@
+import pip
 import sys
 import subprocess
 
@@ -5,12 +6,16 @@ from warnings import warn as _warn
 
 # Detect version requirements
 py_ver = sys.version_info[0: 2]
-req_ver = (3, 0)
-if py_ver < req_ver:
-	raise Exception('Python version should be >=', req_ver)
+pip_ver = tuple(map(int, pip.__version__.split('.')))
+
+req_py_ver = (3, 5)
+if py_ver < req_py_ver:
+	raise Exception('Python version should be >=', req_py_ver)
+
+if pip_ver < (20, 1):
+	_warn('PIP might need to be updated (currently using {})'.format('.'.join(map(str, pip_ver))))
 
 # Setup from requirements
-# subprocess.run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
 APT_INST = ['sudo', 'apt-get', 'install']
 PIP_INST = [sys.executable, '-m', 'pip', 'install']
 
