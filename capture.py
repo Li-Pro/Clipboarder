@@ -4,6 +4,8 @@ import subprocess as _subprocess
 from warnings import warn as _warn
 from PIL import ImageGrab as _ImageGrab, Image as _Image
 
+__all__ = ['NoImageData', 'getClipboardImage']
+
 class NoImageData(Exception):
 	def __init__(self):
 		super().__init__('No image data in clipboard.')
@@ -16,7 +18,11 @@ if _sys.platform in ('darwin', 'win32'):
 		
 		return img
 
-elif _sys.platform.startswith('linux'):
+else:
+	if not _sys.platform.startswith('linux'):
+		_warn("{}\n{}".format("Module is only tested in macOS & Windows & Linux (Ubuntu), other platform might not be supported.",
+							  "Feel free to feedback to me if it doesn't work, or vice versa!"))
+	
 	def getClipboardImage():
 		MIMEs = ['image/png', 'image/jpeg', 'image/bmp', 'image/gif', 'image/vnd.microsoft.icon', 'image/svg+xml', 'image/tiff', 'image/webp']
 		for mimex in MIMEs:
@@ -38,10 +44,6 @@ elif _sys.platform.startswith('linux'):
 				return img
 		
 		raise NoImageData
-
-else:
-	_warn("""Module is only tested in macOS & Windows & Linux (Ubuntu), other platform might not be supported. \
-		Feel free to feedback to me if it doesn't work, or vice versa!""")
 
 #-------------------------- Testing ---------------------------------
 
